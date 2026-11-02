@@ -1,0 +1,18 @@
+{
+  "title": "Studio",
+  "items": [
+    {
+      "label": "Disk",
+      "value": "72%",
+      "percent": 72
+    },
+    {
+      "label": "Backup",
+      "value": "last night"
+    },
+    {
+      "label": "Build",
+      "value": "passing"
+    }
+  ]
+}

@@ -11,7 +11,7 @@ from token_tv.sample import D, H, snapshot
 from token_tv.themes import RENDERERS
 
 OUT = Path(__file__).resolve().parents[1] / 'docs' / 'images'
-FACES = ('hol', 'bayon', 'sastra')
+FACES = ('hol', 'bayon', 'sastra', 'kbach')
 
 
 def sample():

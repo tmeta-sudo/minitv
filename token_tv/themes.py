@@ -775,4 +775,5 @@ def _khmer_face(name):
 
 RENDERERS = {'digital': render_digital, 'neon': render_neon, 'retro': render_retro, 'hud': render_hud, 'gameboy': render_gameboy,
              'retro-dual': render_retro_dual,
-             'hol': _khmer_face('render_hol'), 'bayon': _khmer_face('render_bayon'), 'sastra': _khmer_face('render_sastra')}
+             'hol': _khmer_face('render_hol'), 'bayon': _khmer_face('render_bayon'), 'sastra': _khmer_face('render_sastra'),
+             'kbach': _khmer_face('render_kbach')}

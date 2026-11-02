@@ -6,6 +6,7 @@
     token-tv setup     write a credential-free config (never overwrites one)
     token-tv doctor    check CLIs and login files (--live asks each provider)
     token-tv demo      render every clock face with sample data
+    token-tv desk      show a Khmer clock, calendar, countdown and your own board (not token usage)
     token-tv connect   sign an account in with its official CLI
     token-tv run       start the dashboard and drive the clock
     token-tv update    put the newest release in the background copy's place
@@ -264,6 +265,11 @@ def demo(args):
     from token_tv.autostart import how
     print(f'Sample data only (DEMO). For your own usage on your clock: {how()} start')
     return 0
+
+
+def desk(args):
+    from token_tv import desk as module
+    return module.main(args)
 
 
 PORTS = range(8787, 8797)  # the dashboard's port: the first one free, when another program has 8787
@@ -758,6 +764,13 @@ def main(argv=None):
     d = commands.add_parser('demo', help='render every clock face with sample data')
     d.add_argument('--out', default='token-tv-demo', help='output folder (default: %(default)s)')
     d.add_argument('--scale', type=int, default=3, help='extra enlarged PNG copy (1 = none)')
+    k = commands.add_parser('desk', parents=[config], help='show a clock, calendar, countdown or your own board instead of token usage')
+    k.add_argument('--desk-config', help='desk config path (default: desk.json beside the config)')
+    k.add_argument('--device-url', help='clock address, e.g. 192.168.0.50 (default: from desk.json or the config)')
+    k.add_argument('--init', action='store_true', help='write an example desk.json and board.json; never overwrites')
+    k.add_argument('--out', metavar='DIR', help='draw every page to this folder and stop (no clock needed)')
+    k.add_argument('--once', action='store_true', help='send the page for this moment and stop')
+    k.add_argument('--restore', action='store_true', help="put the clock's own display settings back")
     commands.add_parser('update', parents=[config], help="put the newest release in the background copy's place")
     commands.add_parser('connect', parents=[config], help='log an account in with its official CLI',
                         add_help=False)
@@ -782,7 +795,7 @@ def main(argv=None):
     if args.command is None:
         parser.print_help()
         return 0
-    return {'setup': setup, 'doctor': doctor, 'demo': demo, 'start': start, 'add': add,
+    return {'setup': setup, 'doctor': doctor, 'demo': demo, 'start': start, 'add': add, 'desk': desk,
             'autostart': autostart_command, 'update': update}[args.command](args)
 
 

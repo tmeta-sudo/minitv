@@ -9,7 +9,7 @@ from token_tv import khmer
 from token_tv.display import STYLES, render_page
 from token_tv.sample import D, H, SAMPLE, snapshot
 
-FACES = ('hol', 'bayon', 'sastra')
+FACES = ('hol', 'bayon', 'sastra', 'kbach')
 
 
 class KhmerFacesTest(unittest.TestCase):
