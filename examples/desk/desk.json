@@ -1,0 +1,11 @@
+{
+  "timezone": "Asia/Phnom_Penh",
+  "seconds": 60,
+  "night": {"from": "23:00", "to": "06:00"},
+  "pages": [
+    {"type": "clock"},
+    {"type": "calendar"},
+    {"type": "countdown", "label": "Khmer New Year", "date": "2027-04-14"},
+    {"type": "board", "file": "board.json", "max_age_minutes": 120}
+  ]
+}

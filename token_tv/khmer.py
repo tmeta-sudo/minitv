@@ -4,6 +4,7 @@
            resist-dyed thread really blurs.
 * bayon  – carved sandstone: a weathered stone wall, recessed panels, engraved type, inlaid gauges.
 * sastra – a palm-leaf manuscript (sastra slek rit): leaf strips on a cord, text incised and inked.
+* kbach  – gold ornament on lacquer: a kbach vine of curls and flame leaves between the rows (token_tv/kbach.py).
 
 The used percentage is written in Khmer numerals (០១២៣៤៥៦៧៨៩) and the reset time in Khmer words
 (ថ្ងៃ day, ម៉ោង hour, នាទី minute) when the machine can shape Khmer script; otherwise Latin letters.
@@ -15,6 +16,7 @@ import random
 from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageOps, features
 
 from token_tv.display import account_label, fit_text, overview_rows, reading, shown_windows, slots
+from token_tv import kbach
 from token_tv.themes import SIZE, Canvas, face, glyph, mix, number_text, rgb
 
 SHAPING = features.check('raqm')  # Khmer vowels and subscripts need it; the digits do not
@@ -362,4 +364,62 @@ def render_sastra(snapshot):
         cv.draw.rectangle(bar, fill=level_color(SASTRA_LEVELS, used))
         if old:
             stale_hatch(cv.draw, bar, LEAF_A, step=3)
+    return cv.finish(blur=1)
+
+
+# ───────────────────────── Kbach: gold ornament on lacquer ─────────────────────────
+
+@functools.lru_cache(maxsize=None)
+def kbach_base(count):
+    image = kbach.lacquer().copy()
+    draw = ImageDraw.Draw(image)
+    for sl in slots(count, top=3, pitch=79, height=75):
+        y0 = sl.y + sl.h - kbach.BAND - 1
+        image.alpha_composite(kbach.vine(SIZE), (0, y0))
+        draw.line((0, y0 - 1, SIZE, y0 - 1), fill=mix(kbach.GOLD_LO, kbach.LACQUER, .4))
+    return image
+
+
+def render_kbach(snapshot):
+    cv = Canvas('#000000')
+    cv.base.paste(kbach_base(len(overview_rows(snapshot))), (0, 0))
+    for sl, row, used, tag, old, reset in entries(snapshot):
+        y, ch = sl.y, sl.h - kbach.BAND - 1
+        mark = max(10, round(12 * sl.small))
+        my = round(y + ch * .17 - mark / 2 + 2)
+        cv.ink.alpha_composite(glyph(row['provider'], mark, kbach.GOLD), (14, my))
+        size = sl.txt(10)
+        room = 226 - (30 + (cv.draw.textlength(tag, font=latin(size)) + 12 if tag else 0))
+        cv.spaced((14 + mark + 6, round(y + ch * .17 + 2)),
+                  fit_text(cv.draw, account_label(row), latin(size), room).upper(), latin(size), kbach.GOLD_TEXT, 1.2, anchor='lm')
+        cv.spaced((226, round(y + ch * .17 + 2)), tag, latin(size), '#f08a55' if old else kbach.GOLD, 1.2, anchor='rm')
+        base = round(y + ch * .74)
+        nfont = face('moul.woff2', min(round(sl.num(26) * (.8 if sl.count == 4 else 1)), 42))
+        if used is None:
+            right = numeral(cv, 14, base, None, nfont, kbach.GOLD)
+        else:
+            text = khmer_number(used)
+            kbach.gilded(cv, (14, base), text, nfont, anchor='ls')
+            right = 14 + cv.draw.textlength(text, font=nfont)
+            cv.text((right + 3, base), '%', latin(sl.num(14), 800), kbach.GOLD, anchor='ls')
+        gh = max(5, round(7 * min(sl.k, 1.5)))
+        gy = round(y + ch - gh - 2)
+        cv.text((226, base if sl.count > 1 else gy - 12), khmer_time(reset),
+                face('battambang-700.woff2', min(sl.txt(17), 18)), kbach.GOLD_TEXT, anchor='rs')
+        cell, gap = (212 - 9 * 3) / 10, 3
+        for i in range(10):  # ten gilt-edged cells; the pigment inside says how much is used
+            a = 14 + i * (cell + gap)
+            box = (round(a), gy, round(a + cell) - 1, gy + gh - 1)
+            cv.draw.rectangle(box, fill='#12060a', outline=kbach.GOLD_LO)
+            if used is None:
+                continue
+            frac = max(0, min(1, used / 10 - i))
+            if frac <= 0:
+                continue
+            fill = level_color(kbach.LEVELS, used)
+            fb = (box[0] + 1, box[1] + 1, max(box[0] + 1, round(a + cell * frac) - 2), box[3] - 1)
+            cv.draw.rectangle(fb, fill=fill)
+            cv.draw.line((fb[0], fb[1], fb[2], fb[1]), fill=mix(fill, '#ffffff', .3))
+            if old:
+                stale_hatch(cv.draw, fb, '#12060a')
     return cv.finish(blur=1)
