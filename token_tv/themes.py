@@ -766,11 +766,13 @@ def render_gameboy(data):
     return to_four_shades(cv.finish())
 
 
-def render_angkor(snapshot):
-    from token_tv.angkor import render_angkor as render  # lazy: angkor.py imports this module's helpers
-    return render(snapshot)
-
+def _khmer_face(name):
+    def render(snapshot):
+        from token_tv import khmer  # lazy: khmer.py imports this module's helpers
+        return getattr(khmer, name)(snapshot)
+    return render
 
 
 RENDERERS = {'digital': render_digital, 'neon': render_neon, 'retro': render_retro, 'hud': render_hud, 'gameboy': render_gameboy,
-             'retro-dual': render_retro_dual, 'angkor': render_angkor}
+             'retro-dual': render_retro_dual,
+             'hol': _khmer_face('render_hol'), 'bayon': _khmer_face('render_bayon'), 'sastra': _khmer_face('render_sastra')}

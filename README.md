@@ -1,16 +1,25 @@
-# minitv: TokenTV with a Khmer-inspired face
+# minitv: TokenTV with Khmer faces
 
-This is a copy of [TokenTV](https://github.com/click6067-ship-it/token-tv) (MIT, see [LICENSE](LICENSE) and [NOTICE](NOTICE)) with one added clock face for a GeekMagic SmallTV.
+A copy of [TokenTV](https://github.com/click6067-ship-it/token-tv) (MIT, see [LICENSE](LICENSE) and [NOTICE](NOTICE)) with three added clock faces for a GeekMagic SmallTV, made from Cambodian craft rather than from pictures of it.
 
-<p align="center"><img src="docs/images/angkor.png" width="360" alt="The Angkor face on sample data"></p>
+<p align="center"><img src="docs/images/khmer-faces.png" width="720" alt="Hol, Bayon and Sastra on sample data"></p>
 
-**Angkor** puts the five towers of Angkor Wat against a dusk sky. Each account sits in a temple-gold frame with stepped corners, and the used percentage is written in Khmer numerals (០១២៣៤៥៦៧៨៩). Only the numerals change: the window name, the reset time, `OLD` for an old reading and a dash for a missing one mean what they do on every other face. The temple is drawn from shapes in `token_tv/angkor.py`; the numerals use Noto Sans Khmer (SIL OFL 1.1).
+| Face | Made from | Details |
+| --- | --- | --- |
+| `hol` | a silk *sampot hol* | woven indigo ground, ikat bands in natural dyes with feathered edges, gauges as woven blocks |
+| `bayon` | carved sandstone | grained stone wall, recessed panels with a lotus-petal frieze, engraved type, gauges as slots inlaid with pigment |
+| `sastra` | a palm-leaf manuscript | leaf strips strung on a red cord, text incised and inked, the gauge a ruled line with a tick at every 10% |
+
+On all three, the used percentage is in Khmer numerals (០១២៣៤៥៦៧៨៩) and the time to the reset is in Khmer words (ថ្ងៃ day, ម៉ោង hour, នាទី minute). Without Khmer text shaping on the machine (Pillow's raqm), the time falls back to `2d 6h`; the numerals do not need it. Everything else keeps its meaning from TokenTV: the window name (`5H`, `WK`, `BUD`), `OLD` for an old reading, a dash and `NO DATA` when nothing was reported, never `0`.
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e .
-.venv/bin/token-tv demo --out token-tv-demo      # writes token-tv-demo/demo-angkor.jpg from sample data
-.venv/bin/token-tv start --face angkor           # on a machine with a clock; or pick "angkor" in the dashboard
+.venv/bin/token-tv demo --out token-tv-demo      # writes demo-hol.jpg, demo-bayon.jpg, demo-sastra.jpg from sample data
+.venv/bin/token-tv start --face hol              # on the machine that talks to the clock; or pick one in the dashboard
+.venv/bin/python scripts/render_khmer_faces.py   # redraws docs/images/khmer-*.png
 ```
+
+The code is in `token_tv/khmer.py`. Fonts: Moul, Bokor, Battambang and Noto Serif Khmer (SIL OFL 1.1, licences beside them in `token_tv/web/`).
 
 ---
 
